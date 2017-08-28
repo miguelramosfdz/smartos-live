@@ -146,10 +146,15 @@ if [ $? -ne 0 ]; then
         if [[ -z $(/bin/bootparams | grep '^smartos=true') ]]; then
             mkdir -p /opt/smartdc/agents/smf
             mount -O -F lofs /var/svc/manifest/site /opt/smartdc/agents/smf
+        fi
 
+        if [[ -n $(/bin/bootparams | grep '^headnode=true') || \
+            -n $(/bin/bootparams | grep '^smartos=true') ]]; then
             mkdir /usbkey
             mount_zfs ${SYS_ZPOOL}/usbkey /usbkey
+        fi
 
+        if [[ -n $(/bin/bootparams | grep '^smartos=true') ]]; then
             mount -F lofs /usbkey/shadow /etc/shadow
             mount -F lofs /usbkey/ssh /etc/ssh
         fi

@@ -37,25 +37,16 @@ if [ "$PS1" ]; then
     if test -n "${DC_NAME}"; then
         ps1_info+="${DC_NAME}"
     fi
-    ps1_headnode=$(source /lib/sdc/config.sh; load_sdc_config; echo $headnode)
-    if test -n "$ps1_headnode"; then
-        ps1_headnode_is_primary=$(source /lib/sdc/config.sh; load_sdc_config;
-            echo $CONFIG_headnode_is_primary)
+    if /bin/bootparams  | grep '^headnode=true' >/dev/null; then
         test -n "$ps1_info" && ps1_info+=" "
-        if test -z "${ps1_headnode_is_primary}"; then
-            ps1_info+="hn"
-        elif test "$ps1_headnode_is_primary" = "true"; then
-            ps1_info+="primary-hn"
-        else
-            ps1_info+="secondary-hn"
-        fi
+        ps1_info+="hn"
     fi
     if test -n "${ps1_info}"; then
-       PS1="[\u@\h (${ps1_info}) \w]\\$ "
+        PS1="[\u@\h (${ps1_info}) \w]\\$ "
     else
-       PS1="[\u@\h \w]\\$ "
+        PS1="[\u@\h \w]\\$ "
     fi
-    unset ps1_info ps1_headnode_is_primary ps1_headnode
+    unset ps1_info
 
     alias ll='ls -lF'
     alias ls='ls --color=auto'
